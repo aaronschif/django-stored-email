@@ -11,6 +11,9 @@ from fields import EmailsListField, EmailHeadersField
 
 
 class EMail(models.Model):
+    class Meta:
+        verbose_name = 'Email'
+
     def __init__(self, *args, **kwargs):
         message = kwargs.pop('message', None)
         queue = kwargs.pop('queue', None)
@@ -55,7 +58,10 @@ class EMail(models.Model):
                         raise NotImplementedError()
 
     def __unicode__(self):
-        return "<'{m.subject}' From: {m.from_email} To: {m.to_emails}>".format(m=self)
+        to_emails = self.to_emails[:3]
+        if self.to_emails[3:]:
+            to_emails.append('...')
+        return "<'{m.subject}' From: {m.from_email} To: {to_emails}>".format(m=self, to_emails=', '.join(to_emails))
 
     def message(self):
         m = EmailMultiAlternatives(self.subject, self.body)
