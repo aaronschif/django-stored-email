@@ -3,9 +3,9 @@ from stored_email.models import EMail, EMailAlternative, EMailAttachment
 
 
 def formatted_emails(obj):
-    displayed_emails = obj.to_emails[:3]
-    if len(obj.to_emails) > 3:
-        displayed_emails.append('... [{} others]'.format(len(obj.to_emails)-3))
+    displayed_emails = obj.to[:3]
+    if len(obj.to) > 3:
+        displayed_emails.append('... [{} others]'.format(len(obj.to)-3))
     return ', '.join(displayed_emails)
 formatted_emails.short_description = "To Emails"
 

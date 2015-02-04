@@ -27,9 +27,9 @@ class EMail(models.Model):
             self.subject = message.subject
             self.body = message.body
 
-            self.to_emails = message.to
-            self.cc_emails = message.cc
-            self.bcc_emails = message.bcc
+            self.to = message.to
+            self.cc = message.cc
+            self.bcc = message.bcc
 
             self.from_email = message.from_email
 
@@ -58,16 +58,16 @@ class EMail(models.Model):
                         raise NotImplementedError()
 
     def __unicode__(self):
-        to_emails = self.to_emails[:3]
-        if self.to_emails[3:]:
+        to_emails = self.to[:3]
+        if self.to[3:]:
             to_emails.append('...')
         return "<'{m.subject}' From: {m.from_email} To: {to_emails}>".format(m=self, to_emails=', '.join(to_emails))
 
     def message(self):
         m = EmailMultiAlternatives(self.subject, self.body)
-        m.to = self.to_emails
-        m.cc = self.cc_emails
-        m.bcc = self.bcc_emails
+        m.to = self.to
+        m.cc = self.cc
+        m.bcc = self.bcc
         m.from_email = self.from_email
 
         m.alternatives = [(att.content, att.mimetype) for att in self.alternatives()]
@@ -91,7 +91,7 @@ class EMail(models.Model):
 
     def alternatives(self):
         return EMailAlternative.objects.filter(message=self)
-    
+
     subject = models.CharField(max_length=250)
     body = models.TextField()
 
@@ -123,4 +123,3 @@ class EMailAttachment(models.Model):
     filename = models.CharField(max_length=200)
     content = models.FileField(upload_to='stored_email')
     mimetype = models.CharField(max_length=200, blank=True, null=True)
-
