@@ -1,7 +1,7 @@
 import os
 SECRET_KEY = 'FOO'
-DEBUG=True
-ROOT_URLCONF='urls'
+DEBUG = True
+ROOT_URLCONF = 'urls'
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 

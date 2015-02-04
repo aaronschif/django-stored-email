@@ -3,7 +3,6 @@ import six
 
 from django.core.validators import validate_email
 from django.db.models import TextField, SubfieldBase
-from django.utils.translation import ugettext as _
 from django import forms
 
 
@@ -91,4 +90,4 @@ class EmailHeadersField(TextField):
     def formfield(self, **kwargs):
         defaults = {'form_class': EmailHeadersFormField}
         defaults.update(kwargs)
-        return super(EmailHeadersField,self).formfield(**defaults)
+        return super(EmailHeadersField, self).formfield(**defaults)

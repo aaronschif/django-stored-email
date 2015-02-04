@@ -1,6 +1,6 @@
 import os
 import pytest
-from django.core.mail import EmailMultiAlternatives, EmailMessage, get_connection
+from django.core.mail import EmailMultiAlternatives, EmailMessage
 
 
 @pytest.fixture()

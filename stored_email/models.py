@@ -1,9 +1,8 @@
-import six
-
 from email.mime.base import MIMEBase
 
 from django.db import models
-from django.core.mail import EmailMultiAlternatives, get_connection, EmailMessage
+from django.core.mail import EmailMultiAlternatives, get_connection, \
+    EmailMessage
 from django.conf import settings
 from django.core.files.base import ContentFile
 
@@ -64,7 +63,8 @@ class EMail(models.Model):
         to_emails = self.to[:3]
         if self.to[3:]:
             to_emails.append('...')
-        return "<'{m.subject}' From: {m.from_email} To: {to_emails}>".format(m=self, to_emails=', '.join(to_emails))
+        return "<'{m.subject}' From: {m.from_email} To: {to_emails}>"\
+            .format(m=self, to_emails=', '.join(to_emails))
 
     def message(self):
         m = EmailMultiAlternatives(self.subject, self.body)
@@ -73,9 +73,11 @@ class EMail(models.Model):
         m.bcc = self.bcc
         m.from_email = self.from_email
 
-        m.alternatives = [(att.content, att.mimetype) for att in self.alternatives()]
+        m.alternatives = \
+            [(att.content, att.mimetype) for att in self.alternatives()]
         for attachment in self.attachments():
-            m.attach(attachment.filename, attachment.content.read(), attachment.mimetype)
+            m.attach(attachment.filename, attachment.content.read(),
+                     attachment.mimetype)
 
         m.extra_headers = self.extra_headers
 
@@ -84,7 +86,8 @@ class EMail(models.Model):
     def send(self, connection=None):
         if not connection:
             connection = get_connection(
-                backend=getattr(settings, 'STORED_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend'))
+                backend=getattr(settings, 'STORED_EMAIL_BACKEND',
+                                'django.core.mail.backends.smtp.EmailBackend'))
         connection.send_messages([self.message()])
         self.sent = True
         self.save()

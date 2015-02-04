@@ -23,9 +23,11 @@ class SimpleStoreEmailBackend(BaseEmailBackend):
 
 class StoreSendEmailBackend(SimpleStoreEmailBackend):
     def send_messages(self, email_messages):
-        to_send = super(StoreSendEmailBackend, self).send_messages(email_messages)
+        to_send = super(StoreSendEmailBackend, self)\
+            .send_messages(email_messages)
         conn = get_connection(
-            backend=getattr(settings, 'STORED_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend'))
+            backend=getattr(settings, 'STORED_EMAIL_BACKEND',
+                            'django.core.mail.backends.smtp.EmailBackend'))
 
         try:
             conn.open()
