@@ -15,47 +15,50 @@ class EMail(models.Model):
         verbose_name = 'Email'
 
     def __init__(self, *args, **kwargs):
-        message = kwargs.pop('message', None)
         queue = kwargs.pop('queue', None)
         super(EMail, self).__init__(*args, **kwargs)
 
         if queue:
             self.queue = queue
 
-        if message:
-            assert isinstance(message, EmailMessage)
-            self.subject = message.subject
-            self.body = message.body
+    @classmethod
+    def create_from_message(cls, message, queue=None):
+        assert isinstance(message, EmailMessage)
+        message_model = cls(queue=queue)
+        message_model.subject = message.subject
+        message_model.body = message.body
 
-            self.to = message.to
-            self.cc = message.cc
-            self.bcc = message.bcc
+        message_model.to = message.to
+        message_model.cc = message.cc
+        message_model.bcc = message.bcc
 
-            self.from_email = message.from_email
+        message_model.from_email = message.from_email
 
-            self.extra_headers = message.extra_headers
+        message_model.extra_headers = message.extra_headers
 
-            self.save()
-            if hasattr(message, 'alternatives'):
-                for c in message.alternatives:
-                    alt = EMailAlternative()
-                    alt.message = self
-                    alt.content = c[0]
-                    alt.mimetype = c[1]
-                    alt.save()
+        message_model.save()
+        if hasattr(message, 'alternatives'):
+            for c in message.alternatives:
+                alt = EMailAlternative()
+                alt.message = message_model
+                alt.content = c[0]
+                alt.mimetype = c[1]
+                alt.save()
 
-            if hasattr(message, 'attachments'):
-                for c in message.attachments:
-                    if isinstance(c, (tuple, list)) and len(c) is 3:
-                        filename, content, mimetype = c
-                        att = EMailAttachment()
-                        att.message = self
-                        att.filename = filename
-                        att.content = ContentFile(content, filename)
-                        att.mimetype = mimetype
-                        att.save()
-                    elif isinstance(c, MIMEBase):
-                        raise NotImplementedError()
+        if hasattr(message, 'attachments'):
+            for c in message.attachments:
+                if isinstance(c, (tuple, list)) and len(c) is 3:
+                    filename, content, mimetype = c
+                    att = EMailAttachment()
+                    att.message = message_model
+                    att.filename = filename
+                    att.content = ContentFile(content, filename)
+                    att.mimetype = mimetype
+                    att.save()
+                elif isinstance(c, MIMEBase):
+                    raise NotImplementedError()
+
+        return message_model
 
     def __unicode__(self):
         to_emails = self.to[:3]

@@ -14,7 +14,7 @@ class SimpleStoreEmailBackend(BaseEmailBackend):
     def send_messages(self, email_messages):
         to_send = []
         for msg in email_messages:
-            x = EMail(message=msg, queue=self.queue)
+            x = EMail.create_from_message(msg, queue=self.queue)
             x.save()
             to_send.append(x)
 

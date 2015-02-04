@@ -8,7 +8,7 @@ from stored_email.models import EMail, EMailAttachment
 
 @pytest.mark.django_db
 def test_simple_email(email):
-    m_email = EMail(message=email)
+    m_email = EMail.create_from_message(email)
     m_email.send()
 
     assert EMail.objects.count() == 1
@@ -17,7 +17,7 @@ def test_simple_email(email):
 
 @pytest.mark.django_db
 def test_unicode(email):
-    e_mail = EMail(message=email)
+    e_mail = EMail.create_from_message(email)
     assert unicode(e_mail)
 
 
@@ -37,7 +37,7 @@ def test_email_backend_in_place():
 def test_headers(email):
     test_headers = {'foo': 'bar'}
     email.extra_headers = test_headers
-    me = EMail(message=email)
+    me = EMail.create_from_message(email)
     assert me.extra_headers == test_headers
     me.save()
 
