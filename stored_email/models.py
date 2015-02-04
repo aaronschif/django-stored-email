@@ -98,9 +98,9 @@ class EMail(models.Model):
     subject = models.CharField(max_length=250)
     body = models.TextField()
 
-    to_emails = EmailsListField()
-    cc_emails = EmailsListField(blank=True)
-    bcc_emails = EmailsListField(blank=True)
+    to = EmailsListField()
+    cc = EmailsListField(blank=True)
+    bcc = EmailsListField(blank=True)
 
     from_email = models.EmailField()
 
